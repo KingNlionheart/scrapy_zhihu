@@ -19,6 +19,8 @@ NEWSPIDER_MODULE = 'zhihu_test.spiders'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
+
+PROXY_ENABLED = False
 PROXY_POOL_URL = 'http://193.112.32.22:5010/get/'
 
 

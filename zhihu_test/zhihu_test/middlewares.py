@@ -74,12 +74,12 @@ class ZhihuTestDownloaderMiddleware:
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader
         # middleware.
+        if get_project_settings()['PROXY_ENABLED']:
+            proxy = requests.get(get_project_settings()['PROXY_POOL_URL']).json()['proxy']
 
-        proxy = requests.get(get_project_settings()['PROXY_POOL_URL']).json()['proxy']
-
-        if proxy:
-            print("this is response ip:"+proxy)
-            request.meta['proxy'] = 'http://{proxy}'.format(proxy=proxy)
+            if proxy:
+                print("this is request ip:"+proxy)
+                request.meta['proxy'] = 'http://{proxy}'.format(proxy=proxy)
 
         # Must either:
         # - return None: continue processing this request
@@ -91,13 +91,14 @@ class ZhihuTestDownloaderMiddleware:
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
-
-        if response.status != 200:
-            proxy = requests.get(get_project_settings()['PROXY_POOL_URL']).json()['proxy']
-            print("this is response ip:"+proxy)
-            # 对当前reque加上代理
-            request.meta['proxy'] = proxy
-            return request
+        if get_project_settings()['PROXY_ENABLED']:
+            if response.status != 200:
+                proxy = requests.get(get_project_settings()['PROXY_POOL_URL']).json()['proxy']
+                if proxy:
+                    print("this is response ip:"+proxy)
+                    # 对当前reque加上代理
+                    request.meta['proxy'] = proxy
+                return request
 
         # Must either;
         # - return a Response object
