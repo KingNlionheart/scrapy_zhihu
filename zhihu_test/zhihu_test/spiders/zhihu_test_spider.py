@@ -24,7 +24,7 @@ class zhihuTestSpider(scrapy.Spider):
         self.comments_url_open = "https://www.zhihu.com/api/v4/answers/{0}/comments?limit={1}&offset={2}&order=reverse&status=open"
         self.comments_url_collapsed = "https://www.zhihu.com/api/v4/answers/{0}/comments?limit={1}&offset={2}&order=reverse&status=collapsed"
 
-        # self.start_urls = ['https://www.zhihu.com/api/v4/questions/{0}'.format(question_id),]
+        self.start_urls = ['https://www.zhihu.com/api/v4/questions/{0}'.format(question_id),]
 
 
     def parse(self, response):
@@ -37,9 +37,10 @@ class zhihuTestSpider(scrapy.Spider):
         # print(response_json.keys())
 
         # print(json.dumps(response_json,indent=4,ensure_ascii=False))
-        print(response_json['origin'])
-        # yield scrapy.Request(self.answers_url_open.format(response_json['id'], self.answers_limit, self.answers_offset),callback=self.parse_answers)
-        # yield scrapy.Request(self.answers_url_collapsed.format(response_json['id'], self.answers_limit, self.answers_offset),callback=self.parse_answers)
+        # print(response_json['origin'])
+
+        yield scrapy.Request(self.answers_url_open.format(response_json['id'], self.answers_limit, self.answers_offset),callback=self.parse_answers)
+        yield scrapy.Request(self.answers_url_collapsed.format(response_json['id'], self.answers_limit, self.answers_offset),callback=self.parse_answers)
 
 
     def parse_answers(self,response):
